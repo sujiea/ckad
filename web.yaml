@@ -1,0 +1,58 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: web
+  namespace: day2
+  labels:
+    app: web
+spec:
+  containers:
+  - name: nginx
+    image: nginx:1.25
+    ports:
+    - containerPort: 80
+    envFrom:
+    - configMapRef:
+        name: app-config
+    env:
+    - name: DB_USER
+      valueFrom:
+        secretKeyRef:
+          name: app-secret
+          key: DB_USER
+    - name: DB_PASS
+      valueFrom:
+        secretKeyRef:
+          name: app-secret
+          key: DB_PASS
+          # Mount both Secret and ConfigMap as read-only files
+    volumeMounts:
+    - name: cfg
+      mountPath: /etc/config
+      readOnly: true
+    - name: creds
+      mountPath: /etc/secret
+      readOnly: true
+    # Probes
+    livenessProbe:
+      httpGet:
+        path: /
+        port: 80
+      initialDelaySeconds: 5
+      periodSeconds: 5
+      failureThreshold: 2
+    readinessProbe:
+      httpGet:
+        path: /
+        port: 80
+      initialDelaySeconds: 2
+      periodSeconds: 3
+      failureThreshold: 2
+  volumes:
+  - name: cfg
+    configMap:
+      name: app-config
+  - name: creds
+    secret:
+      secretName: app-secret
+      defaultMode: 0400

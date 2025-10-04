@@ -1,4 +1,6 @@
 Week 1 – Build Core Knowledge + Daily Labs
+
+
 Day 1 – Core Concepts
 
 Course: Pods, Deployments, Namespaces
