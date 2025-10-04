@@ -7,9 +7,42 @@ Practice:
 
 Create a pod with kubectl run and YAML.
 
+```bash
+kind create cluster --config kind-ckad.yaml
+kubectl get cluster-info
+kubectl get nodes
+```
+
 Scale a Deployment (imperative + YAML).
+```bash
+kubectl create namespace demo
+kubectl create deployment web --image=ngnix -n demo
+kubectl get deploy -n demo
+kubectl scale deploy/web --replicas=3 -n demo
+kubectl rollout status deploy/web -n demo
+kubectl get pods -n demo -o wide
+```
+
+debug the image pull stuck issue
+
+```bash
+kubectl describe deployment web -n demo
+```
+or else use deployment-web.yaml
+
+```bash
+kubectl apply -f deployment-web.yaml
+kubectl rollout status deploy/web
+kubectl get deployment,pods -n demo
+kubectl delete namespace demo
+```
 
 Switch between namespaces.
+
+```bash
+kubectl config current-context
+
+```
 
 Time yourself: 5–7 mins each task.
 
